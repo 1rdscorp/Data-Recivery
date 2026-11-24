@@ -10,7 +10,8 @@ This is the core idea of the whole project, so the work is split into a feasibil
 
 ## What you need to know
 
-- The board runs embedded Linux. The patient connects to a native SATA port. The board's USB 3.0 port works in device mode and connects to the PC.
+- The board runs embedded Linux. In this task the patient connects to the RK3568's native SATA port. The board's USB 3.0 port works in device mode and connects to the PC.
+- A second patient port, on a Cyclone V FPGA with our own SATA core (`09-fpga-gateware.md`), comes later and plugs in through the same `libdr` backend interface. Keep everything above the backend unaware of which port is in use.
 - The virtual disk is a **ublk** userspace block device served by our daemon `drd`. The Linux **USB mass storage gadget** uses that block device as its backing store. So every read from the PC arrives in `drd`, which answers from the image or reads the patient through the `libdr` engine with a time limit.
 - A second USB interface (vendor-specific, bound automatically to WinUSB on Windows through Microsoft OS 2.0 descriptors) carries the control protocol, DRP. The same protocol also runs over TCP.
 - In this prototype, patient power is switched by a simple external power-switch board on GPIO. The real supervisor MCU comes later (`06-supervisor-firmware.md`); hide power control behind an interface so it can be swapped.
@@ -23,9 +24,9 @@ Answer each question with a small experiment, and write the method, result and e
 2. Does it handle disks larger than 2 TiB and 4K-sector disks correctly?
 3. Does the PC see the disk as write-protected, and do Windows, Linux and macOS leave it unmodified?
 4. When `drd` returns an I/O error for a read, what does each host OS see and do? Does it stay responsive? What is the longest response time each OS tolerates before it resets or drops the device?
-5. With standard Linux libata and ATA pass-through, what is the worst-case time from "drive stops responding" to "we have control again"? Is that acceptable, or is a custom kernel driver for the patient port needed now?
+5. With standard Linux libata and ATA pass-through, what is the worst-case time from "drive stops responding" to "we have control again"? This number is the baseline the FPGA port must beat, and it decides how usable the native port is for failing drives in the meantime.
 6. Can the kernel be configured so that it never scans partitions on, mounts, or otherwise touches the patient by itself?
-7. Can the board's two PCIe 3.0 lanes serve two separate devices (image store and patient NVMe)?
+7. Can the board provide PCIe to an external endpoint (the future FPGA link) and to the NVMe image store at the same time? Can the two PCIe 3.0 lanes be split to add a patient NVMe port?
 
 If the kernel gadget proves too limiting in questions 1 to 4, the fallback is to implement USB mass storage in userspace through FunctionFS.
 

@@ -10,7 +10,7 @@ Use with `00-master.md`. Read `docs/PLAN.md` sections 4.2 to 4.4 and, for Lab Po
 
 ## Goal
 
-Design the adapter board named above: a small PCB that connects one class of storage device to the Stabilizer base unit, safely and repeatably. Your output is a design package for engineer review, plus the software description the Stabilizer needs to recognise and use the adapter.
+Design the adapter board named above: a small PCB that connects one class of storage device to the Stabilizer base unit, safely and repeatably. Your output is a design package for review by the project owner, who is the electronics engineer, plus the software description the Stabilizer needs to recognise and use the adapter.
 
 ## Requirements common to all adapters
 
@@ -25,7 +25,7 @@ Design the adapter board named above: a small PCB that connects one class of sto
 ## Notes per adapter class
 
 - **Passive SATA family (A01, A02, A10):** keep SATA pairs short, impedance-controlled, no stubs. Check each proprietary connector pinout against a verified source before drawing it.
-- **PATA / IDE (A03):** choose a SATA-to-PATA bridge still in production; support 40-pin 3.5", 44-pin 2.5" with 5 V, CompactFlash, and ZIF / LIF through sub-boards; master / slave configuration.
+- **PATA / IDE (A03):** the IDE host is implemented in the Stabilizer's FPGA and reaches the adapter through the Lab Port, so the adapter carries 5 V level shifting, termination and protection, not a bridge chip. Support 40-pin 3.5", 44-pin 2.5" with 5 V, CompactFlash, and ZIF / LIF through sub-boards; master / slave configuration. A SATA-to-PATA bridge variant is the fallback if the native host is not ready.
 - **UART terminal (A04):** selectable 1.8 V and 3.3 V levels, series protection, a way for the software to measure the drive's idle line voltage before driving it, probe options for different drive connectors.
 - **ROM programmer (A05):** SPI NOR and I2C EEPROM at 1.8 / 2.5 / 3.3 V, SOIC-8 clip and socket. In-circuit reading must not back-power the drive's board; document the limits.
 - **SD / eMMC (A06, A07):** native host mode, adjustable VCC and VCCQ, low-clock and 1-bit fallback; eMMC through replaceable BGA sockets and an in-system header with short leads.

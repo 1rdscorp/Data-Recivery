@@ -44,7 +44,7 @@ Commands: list devices; show identity and SMART; `image` (start or resume, with 
 - Dependencies: the C standard library and the platform API. A small vendored SHA-256 and a small test framework are fine. Ask before adding anything else.
 - Portable core: everything except `backend/linux_sg` must compile on Linux, Windows (MSYS2) and with Emscripten. CI builds at least Linux GCC, Linux Clang and Windows.
 - Every parser of external data (maps, ddrescue files, device responses, scenario files) has a fuzz target.
-- GPL-licensed projects (ddrescue, OpenSuperClone) may be studied for behaviour. Whether their code may be copied depends on the licence decision in `docs/PLAN.md` section 12; until that is decided, write original code.
+- This code is GPL-2.0-or-later. ddrescue and OpenSuperClone may be studied, and their code may be adapted where that truly saves work. Before copying anything, read the file's own licence header, keep it and the attribution, and record in the report what was taken from where. Code that is "version 2 only" makes the file it lands in version 2 only, so keep such code in separate files.
 
 ## Done when
 

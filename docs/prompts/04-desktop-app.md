@@ -36,6 +36,10 @@ Program-mode features (writing to drives, ROM tools, terminal, vendor plugins) a
 - **Linux direct** (SG_IO) from prompt 03.
 - **Windows direct**: add a `libdr` backend using SCSI and ATA pass-through. Requires administrator rights; explain this to the user when needed.
 
+## File system code and licences
+
+DR Studio and `libdr` are GPL-2.0-or-later. Check the licence of any file system library before linking it. The Sleuth Kit is mostly under the IBM and Common Public Licences, which are not GPL-compatible: do not link it into `libdr`. Either call such tools as separate programs, or use our own parsers in `libdr`.
+
 ## Packaging
 
 - Windows: an installer that bundles the GTK runtime and needs no separate driver installation for the Stabilizer.

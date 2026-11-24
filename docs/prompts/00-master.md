@@ -8,8 +8,9 @@ A failing storage device (the **patient**) connects through an adapter board to 
 
 The parts:
 
-- **Stabilizer base unit**: embedded Linux module with patient ports, switched and monitored patient power, a supervisor microcontroller, USB link to the PC.
+- **Stabilizer base unit**: an RK3568 Linux module (the computer) and a Cyclone V FPGA (the drive interface), with patient ports, switched and monitored patient power, a supervisor microcontroller, and a USB 3.0 link to the PC.
 - **Adapter boards**: small PCBs for SATA, IDE, M.2, NVMe, USB, SD, eMMC, NAND, ROM chips and diagnostic UART.
+- **Gateware**: the Cyclone V design. Our own SATA host core with hardware timeouts and a hardware write blocker, a PCIe endpoint toward the RK3568, and the Lab Port functions.
 - **Device firmware**: the `drd` recovery daemon on the Stabilizer and the supervisor MCU firmware.
 - **PC software**: `libdr` core library, `drctl` command-line tool, DR Studio desktop app. All C.
 - **Website and DR Lab**.
@@ -37,7 +38,8 @@ The patient is usually the only copy of someone's data, on hardware that is dyin
 - All logic lives in `libdr`. The CLI, the GUI and the device daemon are thin layers over it.
 - Disk images and device responses are untrusted input. Every parser checks bounds and is fuzzed.
 - Test against the **simulator** (virtual failing drives) before any real device. New engine behaviour comes with a simulator scenario that proves it.
-- Follow the repository layout in `docs/PLAN.md` section 8. Put an SPDX licence identifier at the top of every source file.
+- Follow the repository layout in `docs/PLAN.md` section 8.
+- The project is open source. Put an SPDX licence identifier at the top of every file: `GPL-2.0-or-later` for software and firmware, `CERN-OHL-S-2.0` for hardware and gateware, `CC-BY-SA-4.0` for lab content and documentation. Reused code keeps its own licence header and attribution. Check licence compatibility before adding any dependency. Never use closed, encrypted or evaluation-only IP cores or libraries.
 - Specifications (`docs/specs/`) are written before the code that implements them, and updated in the same change when behaviour changes.
 - Keep changes small and focused. Do not add features, abstractions or dependencies the task did not ask for.
 
@@ -46,6 +48,7 @@ The patient is usually the only copy of someone's data, on hardware that is dyin
 - Do not say hardware works unless you have test evidence. Say exactly what was tested, on what, and what was not.
 - Part numbers, pinouts, voltages, register layouts and vendor commands must come from a datasheet or specification you actually consulted; name the source. If you could not check something, mark it `UNVERIFIED:` in the document or code comment and list it in your report.
 - Vendor-specific drive commands can destroy data. Never present one as safe without a source and a backup step.
+- The project owner is the electronics engineer and reviews all hardware. Give them what a reviewer needs: your sources, your assumptions, and the places where you were least sure.
 
 ## How to report when you finish
 
