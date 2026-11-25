@@ -133,6 +133,13 @@ So the Cyclone V is the stronger chip for the drive side and the weaker one for 
 
 **Which Cyclone V.** It must be a variant with transceivers: GX, GT, SX or ST, with at least three channels. E and SE devices have no transceivers and cannot do SATA or PCIe; several popular boards (DE10-Nano, DE1-SoC) carry SE devices. A GX is enough, because the RK3568 is the processor.
 
+**Development board.** The owner's Terasic Cyclone V GX Starter Kit (C5G) carries a 5CGXFC5C6F27C7N: six transceivers rated to 3.125 Gbps and the PCIe hard IP. It suits the Phase 0 link test and the Phase 2F gateware work, and the same device can go on the rev A board. The kit has no SATA connector and no PCIe connector, so it needs:
+
+- a SATA connection through its HSMC connector: the Terasic SATA/SAS HSMC card (P0053), or a small custom HSMC card;
+- for the link to the RK3568, a custom HSMC-to-PCIe adapter. Until that exists, the SATA core is driven over JTAG or the on-board USB UART.
+
+To check in the kit's manual and schematic before buying anything: which transceiver channels reach the HSMC connector, the AC-coupling capacitor values on them (SATA expects about 10 nF), which reference clocks feed the transceiver bank, and whether the channel the PCIe hard IP requires is among the HSMC channels.
+
 **A limit to know.** Cyclone V does not support SATA at 6 Gbps. SATA III drives fall back to 3 Gbps on the FPGA port, which is enough for hard drives and acceptable for SATA SSDs. The RK3568 port runs at 6 Gbps.
 
 **Not yet verified (Phase 0 tasks on development boards):**
@@ -397,6 +404,7 @@ Phases 1, 2 and 2F can overlap. If Phase 2F is not finished when the base unit i
 | Licence | Open source. Software: GPL-2.0-or-later, so it can be combined with ddrescue and OpenSuperClone code. Hardware and gateware: CERN-OHL-S-2.0. Lab content and documentation: CC BY-SA 4.0. |
 | Electronics engineer | The project owner designs and reviews all boards. |
 | Main chips | RK3568 as the computer, Cyclone V as the drive interface (section 4.1). A Cyclone V alone was evaluated and not chosen because of its USB 2.0 link and weak image store. |
+| Cyclone V development board | Terasic Cyclone V GX Starter Kit (C5G), 5CGXFC5C6F27C7N, already on hand. |
 
 ### Still open
 
@@ -404,14 +412,13 @@ Each has a default that the plan assumes until decided.
 
 | # | Decision | Default assumed |
 |---|----------|-----------------|
-| 1 | Which Cyclone V device and development board | A GX or SX with at least three transceivers; to be confirmed against what is on hand |
-| 2 | Main audience | Repair technicians and serious hobbyists first, professional labs later |
-| 3 | PC operating systems | Windows and Linux first, macOS later |
-| 4 | GUI toolkit | GTK 4 |
-| 5 | Hardware description language for the gateware | SystemVerilog, unless the owner prefers VHDL |
-| 6 | Website languages, and whether the site sells hardware | English first, translation-ready; no shop at launch |
-| 7 | Who reviews lab content | A recovery technician, to be named |
-| 8 | Product names and branding | Working names for now |
+| 1 | Main audience | Repair technicians and serious hobbyists first, professional labs later |
+| 2 | PC operating systems | Windows and Linux first, macOS later |
+| 3 | GUI toolkit | GTK 4 |
+| 4 | Hardware description language for the gateware | SystemVerilog, unless the owner prefers VHDL |
+| 5 | Website languages, and whether the site sells hardware | English first, translation-ready; no shop at launch |
+| 6 | Who reviews lab content | A recovery technician, to be named |
+| 7 | Product names and branding | Working names for now |
 
 ## 13. Prior art and references
 

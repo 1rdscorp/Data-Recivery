@@ -4,8 +4,8 @@ Use with `00-master.md`. Read `docs/PLAN.md` sections 4.1 and 5.
 
 **Fill in before use:**
 
-- Cyclone V device and development board: `<for example: 5CGXFC5C6F27C7 on the Cyclone V GX Starter Kit>`
-- How the SATA drive connects to the board: `<HSMC SATA card, SMA breakout, custom board>`
+- Cyclone V device and development board: 5CGXFC5C6F27C7N on the Terasic Cyclone V GX Starter Kit (C5G). Six transceivers rated to 3.125 Gbps, PCIe hard IP, HSMC connector, no SATA or PCIe connector on the board.
+- How the SATA drive connects to the board: `<Terasic SATA/SAS HSMC card P0053, or a custom HSMC card>`
 - Hardware description language: `<SystemVerilog or VHDL>`
 
 ## Goal
@@ -24,6 +24,7 @@ The FPGA connects to the Stabilizer's computer (RK3568, Linux) as a PCIe endpoin
 
 Prove the link before building the rest. Write method, results and evidence in `docs/specs/fpga-feasibility.md`.
 
+0. Read the kit's manual and schematic first and record: which transceiver channels reach the HSMC connector, the AC-coupling capacitor values on them and on the SATA card (SATA expects about 10 nF), which reference clocks feed the transceiver bank and at what frequencies, and which channel the PCIe hard IP requires. Flag any conflict before writing HDL.
 1. Bring up the transceiver for SATA: reference clock, out-of-band signalling (COMRESET, COMINIT, COMWAKE) using electrical idle and signal detect, speed negotiation.
 2. Reach a stable link at 1.5 Gbps and at 3.0 Gbps, including with drives that use spread-spectrum clocking.
 3. Send IDENTIFY DEVICE and read sectors with a PIO and a DMA read command.
@@ -59,6 +60,7 @@ If the link cannot be made stable, say so plainly and report what was tried. Tha
 **PCIe endpoint and Linux side**
 
 - Register interface, DMA for drive data, interrupts.
+- The development kit has no PCIe connector. Until an HSMC-to-PCIe adapter exists, drive the same register interface through a JTAG or UART bridge, so that the PCIe wrapper is the only part left to prove on hardware later.
 - A Linux kernel driver for the RK3568 (`firmware/device/`) that exposes the command interface to the `drd` daemon, and a `libdr` backend that implements the standard backend interface on top of it.
 - The patient port is never presented to Linux as a normal disk.
 
